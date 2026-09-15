@@ -1,0 +1,24 @@
+{
+  "name": "pi4-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Giantrafa/PI4-back.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Giantrafa/PI4-back/issues"
+  },
+  "homepage": "https://github.com/Giantrafa/PI4-back#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
