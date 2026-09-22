@@ -2,9 +2,11 @@
   "name": "pi4-back",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon --exec babel-node src/index.js",
+    "build": "babel src -d dist",
+    "start": "node dist/index.js"
   },
   "repository": {
     "type": "git",
@@ -13,12 +15,23 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/Giantrafa/PI4-back/issues"
   },
   "homepage": "https://github.com/Giantrafa/PI4-back#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1",
+    "pg": "^8.23.0",
+    "sequelize": "^6.37.8"
+  },
+  "devDependencies": {
+    "@babel/cli": "^8.0.6",
+    "@babel/core": "^8.0.6",
+    "@babel/node": "^8.0.6",
+    "@babel/preset-env": "^8.0.6",
+    "nodemon": "^3.1.14"
   }
 }
