@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/Giantrafa/PI4-back#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^18.0.1",
     "express": "^5.2.1",
