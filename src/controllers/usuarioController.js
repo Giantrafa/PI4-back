@@ -14,6 +14,21 @@ const criar = async (req, res) => {
   }
 };
 
+const listar = async (req, res) => {
+  try{
+    const usuario = await usuarioService.listar();
+
+    return res.status(200).json(usuario);
+  } catch (erro) {
+    console.error(erro);
+
+    return res.status(500).json({
+      message: "Erro ao listar usuários!",
+    });
+  }
+};
+
 export default {
   criar,
+  listar,
 };
