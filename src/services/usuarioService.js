@@ -3,8 +3,25 @@ import models from "../models/index.js";
 
 const { Usuario } = models;
 
+const semSenha = (usuario) => {
+  const { senha_hash, ...dados } = usuario.toJSON();
+
+  return dados;
+};
+
+const erroValidacao = (mensagem) => {
+  const erro = new Error(mensagem);
+  erro.name = "ValidacaoError";
+
+  return erro;
+};
+
 const criar = async (dados) => {
   const { nome, email, senha, role } = dados;
+
+  if (!senha) {
+    throw erroValidacao("A senha é obrigatória");
+  }
 
   const senha_hash = await bcrypt.hash(senha, 10);
 
@@ -15,7 +32,7 @@ const criar = async (dados) => {
     role,
   });
 
-  return usuario;
+  return semSenha(usuario);
 };
 
 const listar = async () => {
@@ -43,11 +60,13 @@ const atualizar = async (id, dados) => {
     return null;
   }
 
-  const dadosAtualizados = {
-    nome: dados.nome,
-    email: dados.email,
-    role: dados.role,
-  };
+  const dadosAtualizados = {};
+
+  ["nome", "email", "role"].forEach((campo) => {
+    if (dados[campo] !== undefined) {
+      dadosAtualizados[campo] = dados[campo];
+    }
+  });
 
   if (dados.senha) {
     dadosAtualizados.senha_hash = await bcrypt.hash(dados.senha, 10);
@@ -55,7 +74,7 @@ const atualizar = async (id, dados) => {
 
   await usuario.update(dadosAtualizados);
 
-  return usuario;
+  return semSenha(usuario);
 };
 
 const remover = async (id) => {
@@ -67,7 +86,7 @@ const remover = async (id) => {
 
   await usuario.destroy();
 
-  return usuario;
+  return semSenha(usuario);
 };
 
 export default {

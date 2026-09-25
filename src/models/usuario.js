@@ -24,6 +24,12 @@ const getUsuarioModel = (sequelize, { DataTypes }) => {
       role: {
         type: DataTypes.ENUM("admin", "gestor", "fiscalizador"),
         allowNull: false,
+        validate: {
+          isIn: {
+            args: [["admin", "gestor", "fiscalizador"]],
+            msg: "Role deve ser admin, gestor ou fiscalizador",
+          },
+        },
       },
     },
     {

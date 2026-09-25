@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-import usuarioService from "./services/usuarioService.js";
+import usuarioService from "../services/usuarioService.js";
 
 const testar = async () => {
   try {
@@ -12,7 +12,7 @@ const testar = async () => {
     });
 
     console.log("Usuário criado:");
-    console.log(usuario.toJSON());
+    console.log(usuario);
 
     const usuarios = await usuarioService.listar();
 

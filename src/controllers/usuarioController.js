@@ -1,16 +1,38 @@
 import usuarioService from "../services/usuarioService.js";
 
+const tratarErro = (res, erro, mensagem) => {
+  if (erro.name === "SequelizeUniqueConstraintError") {
+    return res.status(409).json({
+      mensagem: "Email já cadastrado",
+    });
+  }
+
+  if (
+    erro.name === "SequelizeValidationError" ||
+    erro.name === "ValidacaoError"
+  ) {
+    return res.status(400).json({
+      mensagem,
+      erros: erro.errors
+        ? erro.errors.map((e) => e.message)
+        : [erro.message],
+    });
+  }
+
+  console.error(erro);
+
+  return res.status(500).json({
+    mensagem,
+  });
+};
+
 const criar = async (req, res) => {
   try {
     const usuario = await usuarioService.criar(req.body);
 
     return res.status(201).json(usuario);
   } catch (erro) {
-    console.error(erro);
-
-    return res.status(500).json({
-      mensagem: "Erro ao criar usuário",
-    });
+    return tratarErro(res, erro, "Erro ao criar usuário");
   }
 };
 
@@ -20,11 +42,7 @@ const listar = async (req, res) => {
 
     return res.status(200).json(usuario);
   } catch (erro) {
-    console.error(erro);
-
-    return res.status(500).json({
-      message: "Erro ao listar usuários",
-    });
+    return tratarErro(res, erro, "Erro ao listar usuários");
   }
 };
 
@@ -43,11 +61,7 @@ const atualizar = async (req, res) => {
 
     return res.status(200).json(usuario);
   } catch (erro) {
-    console.error(erro);
-
-    return res.status(500).json({
-      mensagem: "Erro ao atualizar usuário",
-    });
+    return tratarErro(res, erro, "Erro ao atualizar usuário");
   }
 };
 
@@ -63,11 +77,7 @@ const remover = async (req, res) => {
 
     return res.status(200).json(usuario);
   } catch (erro) {
-    console.error(erro);
-
-    return res.status(500).json({
-      mensagem: "Erro ao apagar usuário",
-    });
+    return tratarErro(res, erro, "Erro ao apagar usuário");
   }
 };
 
@@ -82,11 +92,7 @@ const buscarPorId = async (req, res) => {
     }
     return res.status(200).json(usuario);
   } catch (erro) {
-    console.error(erro);
-
-    return res.status(500).json({
-      mensagem: "Erro ao buscar usuário",
-    });
+    return tratarErro(res, erro, "Erro ao buscar usuário");
   }
 };
 
