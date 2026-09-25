@@ -32,6 +32,21 @@ const getUsuarioModel = (sequelize, { DataTypes }) => {
     }
   );
 
+  Usuario.associate = (models) => {
+    Usuario.hasMany(models.Visita, {
+      foreignKey: "gestor_id",
+      as: "visitasGerenciadas",
+      onDelete: "RESTRICT",
+    });
+
+    Usuario.belongsToMany(models.Visita, {
+      through: models.VisitaFiscalizador,
+      foreignKey: "fiscalizador_id",
+      otherKey: "visita_id",
+      as: "visitasFiscalizadas",
+    });
+  };
+
   return Usuario;
 };
 
