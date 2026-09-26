@@ -89,10 +89,17 @@ const remover = async (id) => {
   return semSenha(usuario);
 };
 
+const buscarPorEmail = async (email) => {
+  return await Usuario.findOne({
+    where: { email },
+  });
+};
+
 export default {
   criar,
   listar,
   buscarPorId,
+  buscarPorEmail,
   atualizar,
   remover,
 };
