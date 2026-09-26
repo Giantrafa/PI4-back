@@ -24,6 +24,12 @@ const getUsuarioModel = (sequelize, { DataTypes }) => {
       role: {
         type: DataTypes.ENUM("admin", "gestor", "fiscalizador"),
         allowNull: false,
+        validate: {
+          isIn: {
+            args: [["admin", "gestor", "fiscalizador"]],
+            msg: "Role deve ser admin, gestor ou fiscalizador",
+          },
+        },
       },
     },
     {
@@ -31,6 +37,21 @@ const getUsuarioModel = (sequelize, { DataTypes }) => {
       underscored: true,
     }
   );
+
+  Usuario.associate = (models) => {
+    Usuario.hasMany(models.Visita, {
+      foreignKey: "gestor_id",
+      as: "visitasGerenciadas",
+      onDelete: "RESTRICT",
+    });
+
+    Usuario.belongsToMany(models.Visita, {
+      through: models.VisitaFiscalizador,
+      foreignKey: "fiscalizador_id",
+      otherKey: "visita_id",
+      as: "visitasFiscalizadas",
+    });
+  };
 
   return Usuario;
 };

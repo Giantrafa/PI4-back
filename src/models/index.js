@@ -2,6 +2,12 @@ import Sequelize from "sequelize";
 import pg from "pg";
 
 import getUsuarioModel from "./usuario.js";
+import getVisitaModel from "./visita.js";
+import getVisitaFiscalizadorModel from "./visitaFiscalizador.js";
+import getPerguntaQuestionarioModel from "./perguntaQuestionario.js";
+import getRespostaQuestionarioModel from "./respostaQuestionario.js";
+import getDocumentoModel from "./documento.js";
+import getAssinaturaModel from "./assinatura.js";
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: "postgres",
@@ -10,6 +16,12 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
 
 const models = {
     Usuario: getUsuarioModel(sequelize, Sequelize),
+    Visita: getVisitaModel(sequelize, Sequelize),
+    VisitaFiscalizador: getVisitaFiscalizadorModel(sequelize, Sequelize),
+    PerguntaQuestionario: getPerguntaQuestionarioModel(sequelize, Sequelize),
+    RespostaQuestionario: getRespostaQuestionarioModel(sequelize, Sequelize),
+    Documento: getDocumentoModel(sequelize, Sequelize),
+    Assinatura: getAssinaturaModel(sequelize, Sequelize),
 };
 
 Object.keys(models).forEach((key) => {

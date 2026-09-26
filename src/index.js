@@ -19,6 +19,12 @@ app.get("/", (req, res) => {
 const port = process.env.PORT || 3000;
 const eraseDatabaseOnSync = process.env.ERASE_DATABASE_ON_SYNC === "true";
 
-sequelize.sync({ force: eraseDatabaseOnSync }).then(() => {
-  app.listen(port, () => console.log(`Servidor rodando na porta ${port}!`));
-});
+sequelize
+  .sync({ force: eraseDatabaseOnSync })
+  .then(() => {
+    app.listen(port, () => console.log(`Servidor rodando na porta ${port}!`));
+  })
+  .catch((erro) => {
+    console.error("Erro ao conectar com o banco de dados:", erro.message);
+    process.exit(1);
+  });
