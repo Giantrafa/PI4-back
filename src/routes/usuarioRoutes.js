@@ -4,6 +4,7 @@ import usuarioController from "../controllers/usuarioController.js";
 const router = Router();
 
 router.post("/", usuarioController.criar);
+router.post("/login", usuarioController.login);
 router.get("/", usuarioController.listar);
 router.put("/:id", usuarioController.atualizar);
 router.delete("/:id", usuarioController.remover);
