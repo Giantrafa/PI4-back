@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
 import usuarioService from "../services/usuarioService.js";
 
 const login = async (req, res) => {
