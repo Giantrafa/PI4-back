@@ -3,7 +3,7 @@ import { Router } from "express";
 import authController from "../controllers/authController.js";
 
 const router = Router();
-
-router.post("/login", authController.login);
+//rota alterada para entrega de testes
+router.post("/loginnnn", authController.login);
 
 export default router;
