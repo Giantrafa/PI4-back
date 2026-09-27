@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import bcrypt from "bcrypt";
 import models from "../models/index.js";
 import usuarioService from "../services/usuarioService.js";
- 
+
 vi.mock("../models/index.js", () => ({
   default: {
     Usuario: {
@@ -13,76 +13,100 @@ vi.mock("../models/index.js", () => ({
 }));
 
 const { Usuario } = models;
- 
-const usuario = (dados = {}) => {
-  const base = {
-    id: 1,
-    nome: "Ana",
-    email: "ana@x.com",
-    role: "FISCAL",
-    senha_hash: "hash_qualquer",
-    ...dados,
-  };
- 
-  return { ...base, toJSON: () => ({ ...base }) };
+
+const criarUsuarioFalso = (dados) => {
+  const usuario = { id: 1, ...dados };
+  return { toJSON: () => ({ ...usuario }) };
 };
- 
-describe("criar", () => {
-  it("usuário não deve criar uma conta sem senha", async () => {
-    const dadosSemSenha = { nome: "Ana", email: "ana@x.com", role: "FISCAL" };
- 
-    await expect(usuarioService.criar(dadosSemSenha)).rejects.toThrow(
-      "A senha é obrigatória"
-    );
-     expect(Usuario.create).not.toHaveBeenCalled();
-  });
- 
-  it("usuário não deve criar uma conta com email já cadastrado", async () => {
-    Usuario.findOne.mockResolvedValue(usuario({ id: 2 }));
- 
+
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+
+describe("cadastro de usuário", () => {
+  it("cadastra com senha protegida e não devolve o hash", async () => {
     const dados = {
-      nome: "Ana",
-      email: "ana@x.com",
-      senha: "senha1234",
-      role: "FISCAL",
+      nome: "Bia",
+      email: "bia@exemplo.com",
+      senha: "1234",
+      role: "fiscalizador",
     };
- 
-    await expect(usuarioService.criar(dados)).rejects.toThrow(
-      "Email já cadastrado"
+    Usuario.findOne.mockResolvedValue(null);
+    Usuario.create.mockImplementation(async (dadosCriacao) =>
+      criarUsuarioFalso(dadosCriacao)
     );
- 
+
+    const resultado = await usuarioService.criar(dados);
+    const dadosSalvos = Usuario.create.mock.calls[0][0];
+
+    expect(Usuario.findOne).toHaveBeenCalledWith({
+      where: { email: dados.email },
+    });
+    expect(dadosSalvos.senha_hash).not.toBe(dados.senha);
+    expect(await bcrypt.compare(dados.senha, dadosSalvos.senha_hash)).toBe(true);
+    expect(resultado).toEqual({
+      id: 1,
+      nome: dados.nome,
+      email: dados.email,
+      role: dados.role,
+    });
+    expect(resultado.senha_hash).toBeUndefined();
+  });
+
+  it("rejeita cadastro sem senha", async () => {
+    await expect(
+      usuarioService.criar({
+        nome: "Bia",
+        email: "bia@exemplo.com",
+        role: "fiscalizador",
+      })
+    ).rejects.toThrow("A senha é obrigatória");
+
+    expect(Usuario.findOne).not.toHaveBeenCalled();
+    expect(Usuario.create).not.toHaveBeenCalled();
+  });
+
+  it("rejeita cadastro com email já existente", async () => {
+    Usuario.findOne.mockResolvedValue(criarUsuarioFalso({ id: 2 }));
+
+    await expect(
+      usuarioService.criar({
+        nome: "Bia",
+        email: "bia@exemplo.com",
+        senha: "1234",
+        role: "fiscalizador",
+      })
+    ).rejects.toThrow("Email já cadastrado");
+
     expect(Usuario.create).not.toHaveBeenCalled();
   });
 });
- 
-describe("login", () => {
-  it("usuário não deve conseguir logar com senha errada", async () => {
-    const senha_hash = await bcrypt.hash("senhaCorreta", 10);
-    Usuario.findOne.mockResolvedValue(usuario({ senha_hash }));
- 
-    await expect(
-      usuarioService.login({ email: "ana@x.com", senha: "senhaErrada" })
-    ).rejects.toThrow("Email ou senha inválidos");
-  });
- 
-  it("usuário não deve conseguir logar com e-mail inexistente", async () => {
-    Usuario.findOne.mockResolvedValue(null);
- 
-    await expect(
-      usuarioService.login({ email: "ninguem@x.com", senha: "senha1234" })
-    ).rejects.toThrow("Email ou senha inválidos");
-  });
- 
-  it("usuário não deve conseguir logar sem e-mail ou senha", async () => {
-    await expect(
-      usuarioService.login({ email: "ana@x.com" })
-    ).rejects.toThrow("Email ou senha inválidos");
- 
-    await expect(
-      usuarioService.login({ senha: "senha1234" })
-    ).rejects.toThrow("Email ou senha inválidos");
- 
-    expect(Usuario.findOne).not.toHaveBeenCalled();
-  });
+
+describe("validações do modelo Usuario", () => {
+  it.todo("deve exigir nome");
+  it.todo("deve rejeitar nome vazio");
+  it.todo("deve exigir email");
+  it.todo("deve rejeitar email em formato inválido");
+  it.todo("deve exigir senha_hash");
+  it.todo("deve aceitar apenas os papéis permitidos");
 });
- 
+
+describe("listar usuários", () => {
+  it.todo("deve retornar usuários sem senha_hash");
+});
+
+describe("buscar usuário por id", () => {
+  it.todo("deve retornar o usuário encontrado");
+  it.todo("deve retornar null quando o usuário não existir");
+});
+
+describe("atualizar usuário", () => {
+  it.todo("deve atualizar os dados informados");
+  it.todo("deve salvar a nova senha como hash");
+  it.todo("deve retornar null quando o usuário não existir");
+});
+
+describe("remover usuário", () => {
+  it.todo("deve remover o usuário encontrado");
+  it.todo("deve retornar null quando o usuário não existir");
+});

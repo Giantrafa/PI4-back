@@ -41,6 +41,4 @@ router.get(
   usuarioController.buscarPorId
 );
 
-router.post("/login", usuarioController.login);
-
 export default router;

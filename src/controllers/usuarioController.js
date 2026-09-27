@@ -96,22 +96,9 @@ const buscarPorId = async (req, res) => {
   }
 };
 
-const login = async (req, res) => {
-  try {
-    const resultado = await usuarioService.login(req.body);
-    return res.status(200).json(resultado);
-  } catch (erro){
-    if (erro.name === "AutenticacaoError") {
-      return res.status(401).json({ mensagem: erro.message });
-    }
-    return res.status(500).json({ mensagem: "Erro interno "});
-  }
-}
-
 export default {
   criar,
   listar,
-  login,
   atualizar,
   remover,
   buscarPorId,
