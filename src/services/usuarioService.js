@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import models from "../models/index.js";
 
 const { Usuario } = models;
@@ -95,40 +94,10 @@ const remover = async (id) => {
   return semSenha(usuario);
 };
 
-const erroAutenticacao = () => {
-  const erro=new Error ("Email ou senha inválidos");
-  erro.name="AutenticacaoError";
-  return erro;
-}
-
-const buscarPorEmail = async (email) => {
-  return await Usuario.findOne({
-    where: { email },
-  });
-};
-
-const login = async ({email, senha}) => {
-  if (!email || !senha) throw erroAutenticacao();
-
-  const usuario = await Usuario.findOne({ where: { email }});
-  if (!usuario) throw erroAutenticacao();
-
-  const senhaConfere=await bcrypt.compare(senha, usuario.senha_hash);
-  if (!senhaConfere) throw erroAutenticacao();
-
-  const token = jwt.sign(
-    { id: usuario.id, role: usuario.role }, process.env.JWT_SECRET, {expiresIn: "8h"}
-  );
-
-  return {token, usuario: semSenha(usuario)};
-}
-
 export default {
   criar,
   listar,
-  login,
   buscarPorId,
   atualizar,
   remover,
-  buscarPorEmail,
 };
