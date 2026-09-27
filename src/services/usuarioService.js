@@ -101,6 +101,12 @@ const erroAutenticacao = () => {
   return erro;
 }
 
+const buscarPorEmail = async (email) => {
+  return await Usuario.findOne({
+    where: { email },
+  });
+};
+
 const login = async ({email, senha}) => {
   if (!email || !senha) throw erroAutenticacao();
 
@@ -124,4 +130,5 @@ export default {
   buscarPorId,
   atualizar,
   remover,
+  buscarPorEmail,
 };
