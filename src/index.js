@@ -4,6 +4,7 @@ import express from "express";
 import { sequelize } from "./models/index.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import visitaRoutes from "./routes/visitaRoutes.js";
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/usuarios", usuarioRoutes);
 app.use("/auth", authRoutes);
+app.use("/visitas", visitaRoutes);
 
 app.get("/", (req, res) => {
   return res.send("Servidor express executando...");
