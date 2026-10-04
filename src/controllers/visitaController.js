@@ -43,6 +43,27 @@ const criar = async (req, res) => {
   }
 };
 
+const listar = async (req, res) => {
+  try {
+    const filtros = {
+      status: req.query.status,
+      gestor_id: req.query.gestor_id,
+      fiscalizador_id: req.query.fiscalizador_id,
+    };
+
+    if (req.usuario?.role === "fiscalizador") {
+      filtros.fiscalizador_id = req.usuario.id;
+    }
+
+    const visitas = await visitaService.listar(filtros);
+
+    return res.status(200).json(visitas);
+  } catch (erro) {
+    return tratarErro(res, erro, "Erro ao listar visitas");
+  }
+};
+
 export default {
   criar,
+  listar,
 };

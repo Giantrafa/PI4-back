@@ -12,4 +12,11 @@ router.post(
   visitaController.criar
 );
 
+router.get(
+  "/",
+  autenticar,
+  autorizar("admin", "gestor", "fiscalizador"),
+  visitaController.listar
+);
+
 export default router;
