@@ -21,6 +21,12 @@ const getVisitaModel = (sequelize, { DataTypes }) => {
         type: DataTypes.ENUM("agendada", "em_andamento", "concluida", "cancelada"),
         allowNull: false,
         defaultValue: "agendada",
+        validate: {
+          isIn: {
+            args: [["agendada", "em_andamento", "concluida", "cancelada"]],
+            msg: "Status deve ser agendada, em_andamento, concluida ou cancelada",
+          },
+        },
       },
       latitude: {
         type: DataTypes.DECIMAL(10, 8),
